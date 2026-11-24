@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Misi Terang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: satu layar per halaman MPI, kartu krem di atas latar malam biru; nav tetap di bawah. */
+:root{
+  --bg:#0e2340; --bg2:#183a66; --card:#fff8e8; --ink:#1b2a41; --muted:#56667d;
+  --lamp:#ffc93c; --lamp-off:#cfd5de; --teal:#12a597; --coral:#ff6b5b; --line:#8f9db0; --wire:#2b3d57;
+  --good:#1c8f4e; --bad:#d23f38; --soft:#f1e7cf;
+  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif; --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}
+html,body{height:auto}
+body{background:var(--bg);color:var(--card);font-family:var(--body);font-size:18px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,.tile:focus-visible{outline:3px solid var(--lamp);outline-offset:2px}
+.app{max-width:960px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;gap:14px;padding-block:14px 0}
+.top{display:flex;align-items:center;gap:10px;min-width:0}
+.brand,.snd{white-space:nowrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.25rem;color:var(--lamp);letter-spacing:.02em}
+.crumb{color:#b9c8de;font-weight:600;font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow{flex:1}
+.snd{background:transparent;border:2px solid #4b6a93;color:var(--card);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem}
+.card{background:var(--card);color:var(--ink);border-radius:22px;padding:clamp(18px,4vw,34px);min-width:0}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.6rem,4.5vw,2.2rem);color:#0e2340}
+h3{font-size:1.25rem;color:#0e2340}
+p{margin:.6em 0}
+.lead{font-size:1.1rem}
+.btn{border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:14px;padding:10px 16px;font-weight:800;min-height:48px}
+.btn:hover{background:var(--soft)}
+.btn.pri{background:var(--lamp);border-color:#c99400;color:#3a2a00}
+.btn.pri:hover{background:#ffd75f}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.nav{position:sticky;bottom:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bg);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));margin-top:auto}
+.nav .btn{background:#fff8e8}
+.nav .btn.pri{background:var(--lamp)}
+.nav .btn.ghost{background:transparent;color:var(--card);border-color:#4b6a93}
+/* cover */
+.cover{padding:0;overflow:hidden;background:linear-gradient(#0a1a33,#183a66)}
+.cover svg{display:block;width:100%;height:auto}
+.cover-body{padding:6px clamp(18px,4vw,34px) 28px;text-align:center;color:var(--card)}
+.cover-body .kicker{font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.85rem;color:#b9c8de}
+.cover-body h1{font-size:clamp(2.4rem,9vw,4.2rem);color:var(--lamp);margin:4px 0}
+.cover-body .sub{font-size:1.15rem;margin:0 0 18px}
+.start{font-family:var(--display);font-size:1.5rem;padding:12px 40px;border-radius:999px}
+/* menu */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:18px;padding:16px;color:var(--ink);min-height:120px;min-width:0}
+.tile:hover{background:var(--soft);transform:translateY(-2px)}
+.tile b{font-family:var(--display);font-size:1.35rem}
+.tile span{color:var(--muted);font-size:.95rem;line-height:1.35}
+.tile i{font-style:normal;display:inline-block;width:36px;height:36px;border-radius:10px;background:var(--lamp);border:2px solid var(--ink);text-align:center;line-height:32px;font-family:var(--display);font-weight:800}
+/* content */
+.steps{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:12px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;background:#fff;border-radius:16px;padding:14px;border:2px solid var(--soft)}
+.steps .n{width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.3rem}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;align-items:center}
+.fig{background:#fff;border:2px solid var(--soft);border-radius:18px;padding:8px;min-width:0}
+.fig svg{display:block;width:100%;height:auto}
+.cap{font-size:.95rem;color:var(--muted);text-align:center;margin:4px 0 0}
+ul.k{margin:.6em 0;padding-left:1.2em}
+ul.k li{margin:.35em 0}
+.chip{display:inline-block;background:var(--lamp);color:#3a2a00;border-radius:999px;padding:2px 12px;font-weight:800;font-size:.9rem}
+.chip.t{background:var(--teal);color:#fff}
+.tbl{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:460px;background:#fff;border-radius:12px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:2px solid var(--soft);text-align:left;vertical-align:top}
+th{background:var(--ink);color:var(--card);font-family:var(--display);font-size:1.05rem}
+.pager{display:flex;gap:6px;margin-top:14px}
+.pager b{flex:1;height:8px;border-radius:4px;background:var(--soft)}
+.pager b.on{background:var(--teal)}
+.sym{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.sym div{background:#fff;border:2px solid var(--soft);border-radius:16px;padding:12px;display:grid;gap:4px;justify-items:center;text-align:center}
+.sym svg{width:90px;height:60px}
+.sym small{color:var(--muted);line-height:1.3}
+/* lab */
+.seg{display:inline-flex;border:3px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 22px;font-weight:800;color:var(--ink)}
+.seg button.on{background:var(--ink);color:var(--card)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.status{border-radius:14px;padding:12px 14px;font-weight:700;background:#fff;border:2px solid var(--soft)}
+.status.ok{border-color:var(--good)}
+.status.no{border-color:var(--bad)}
+/* quiz */
+.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-weight:800;font-size:.95rem}
+.qtext{font-size:1.25rem;font-weight:800;margin:10px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:12px 14px;color:var(--ink);font-weight:700;min-height:54px}
+.opt:hover:not([disabled]){background:var(--soft)}
+.opt .l{flex:none;width:32px;height:32px;border-radius:50%;background:var(--lamp);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.opt.right{background:#d8f3e3;border-color:var(--good)}
+.opt.wrong{background:#fbdcda;border-color:var(--bad)}
+.fb{margin-top:14px;border-radius:14px;padding:12px 14px;font-weight:600;background:#fff;border:3px solid var(--soft)}
+.fb.ok{border-color:var(--good)}
+.fb.no{border-color:var(--bad)}
+.fb strong{display:block;font-family:var(--display);font-size:1.2rem}
+.fill{display:flex;gap:10px;flex-wrap:wrap}
+.fill input{flex:1;min-width:160px;font:inherit;font-weight:700;padding:10px 14px;border:3px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
+.dnd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.col{min-height:150px;border:3px dashed var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#fff;cursor:pointer}
+.col.hot{border-color:var(--teal);background:#e6f7f5}
+.col h4{margin:0;font-family:var(--display);font-size:1.15rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:50px}
+.card2{background:var(--lamp);color:#3a2a00;border:2px solid #c99400;border-radius:12px;padding:8px 12px;font-weight:800;font-size:.95rem;cursor:grab}
+.card2.sel{outline:3px solid var(--teal);outline-offset:2px}
+.card2.right{background:#d8f3e3;border-color:var(--good);color:var(--ink)}
+.card2.wrong{background:#fbdcda;border-color:var(--bad);color:var(--ink)}
+.score{text-align:center}
+.score .big{font-family:var(--display);font-weight:800;font-size:4.5rem;color:var(--teal);line-height:1}
+.stars{font-size:2.4rem;letter-spacing:.1em;color:var(--lamp);-webkit-text-stroke:1px #c99400}
+.refs{padding-left:1.2em}
+.refs li{margin:.7em 0}
+.refs a{color:#0b6d64;font-weight:800;word-break:break-word}
+.flow{stroke-dasharray:3 14;animation:fl .9s linear infinite}
+@keyframes fl{to{stroke-dashoffset:-34}}
+@media (prefers-reduced-motion:reduce){.flow{animation:none}.tile:hover{transform:none}}
+@media (max-width:520px){.dnd{grid-template-columns:1fr}.nav .btn{flex:1 1 40%}.nav .grow{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+(function(){
+var $app=document.getElementById('app');
+var S={screen:'cover',slide:0,sound:true,
+  lab:{mode:'seri',sw:true,gone:[false,false,false]},
+  q:null};
+var COMPS=[['panduan','Panduan'],['cptp','CP / TP'],['materi','Materi'],['lab','Lab Rangkaian'],['kuis','Kuis'],['referensi','Referensi']];
+
+/* ---------- suara (dibuat dari browser, aktif setelah tombol ditekan) ---------- */
+var ac=null;
+function tone(f,d,delay,type){
+  if(!S.sound)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+(delay||0);
+    o.type=type||'sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.12,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d+0.02);
+  }catch(e){}
+}
+function click(){tone(660,0.07,0,'triangle')}
+function ting(){tone(880,0.12,0,'sine');tone(1320,0.22,0.1,'sine')}
+function buzz(){tone(180,0.25,0,'square')}
+
+/* ---------- gambar rangkaian ---------- */
+function lampSvg(x,y,s){
+  if(s==='gone'){
+    return '<circle cx="'+x+'" cy="'+y+'" r="19" fill="#fff"/><circle cx="'+x+'" cy="'+y+'" r="15" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-dasharray="4 4"/><text x="'+x+'" y="'+(y+5)+'" text-anchor="middle" font-size="14" font-weight="800" fill="var(--muted)">?</text>';
+  }
+  var on=s==='on',dim=s==='dim',out='';
+  if(on||dim)out+='<circle cx="'+x+'" cy="'+y+'" r="'+(on?31:25)+'" fill="var(--lamp)" opacity="'+(on?0.4:0.2)+'"/>';
+  out+='<circle cx="'+x+'" cy="'+y+'" r="16" fill="'+(on||dim?'var(--lamp)':'var(--lamp-off)')+'" fill-opacity="'+(dim?0.55:1)+'" stroke="var(--wire)" stroke-width="3"/>';
+  out+='<path d="M'+(x-7)+','+(y+6)+' q3.5,-14 7,-4 q3.5,-10 7,4" fill="none" stroke="var(--wire)" stroke-width="2"/>';
+  return out;
+}
+function circuit(mode,gone,sw,showTag){
+  var xs=mode==='seri'?[95,165,235]:[105,175,245];
+  var any=gone.some(Boolean);
+  var wires=[],flow=[],lamps='',states=[];
+  var closed=mode==='seri'?(sw&&!any):sw;
+  if(mode==='seri'){
+    wires=['M30,42 V30 H290 V150 H30 V90'];
+    if(closed)flow=wires.slice();
+  }else{
+    wires=['M30,42 V30 H270','M30,90 V150 H270'];
+    xs.forEach(function(x,i){wires.push('M'+x+',30 V150')});
+    if(sw){flow=['M30,42 V30 H270','M30,90 V150 H270'];xs.forEach(function(x,i){if(!gone[i])flow.push('M'+x+',30 V150')});}
+  }
+  xs.forEach(function(x,i){
+    var y=mode==='seri'?30:90,st;
+    if(gone[i])st='gone';else if(!closed)st='off';else st=mode==='seri'?'dim':'on';
+    lamps+=lampSvg(x,y,st);
+  });
+  var s='<svg viewBox="0 0 320 180" role="img" aria-label="Rangkaian listrik '+(mode==='seri'?'seri':'paralel')+' dengan tiga lampu">';
+  wires.forEach(function(d){s+='<path d="'+d+'" fill="none" stroke="var(--wire)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'});
+  flow.forEach(function(d){s+='<path class="flow" d="'+d+'" fill="none" stroke="var(--lamp)" stroke-width="3" stroke-linecap="round"/>'});
+  /* baterai */
+  s+='<path d="M30,90 V75" stroke="var(--wire)" stroke-width="5"/><line x1="14" y1="75" x2="46" y2="75" stroke="var(--wire)" stroke-width="4"/><line x1="21" y1="90" x2="39" y2="90" stroke="var(--wire)" stroke-width="8"/>';
+  s+='<path d="M30,75 V58" stroke="var(--wire)" stroke-width="5" stroke-linecap="round"/>';
+  s+='<text x="52" y="73" font-size="13" font-weight="800" fill="var(--wire)">+</text><text x="52" y="105" font-size="13" font-weight="800" fill="var(--wire)">−</text>';
+  /* saklar */
+  s+=sw?'<path d="M30,58 L30,42" stroke="var(--wire)" stroke-width="5" stroke-linecap="round"/>':'<path d="M30,58 L47,45" stroke="var(--wire)" stroke-width="5" stroke-linecap="round"/>';
+  s+='<circle cx="30" cy="58" r="4" fill="var(--wire)"/><circle cx="30" cy="42" r="4" fill="var(--wire)"/>';
+  if(showTag){
+    s+='<text x="58" y="55" font-size="11" font-weight="700" fill="var(--muted)">saklar</text><text x="58" y="125" font-size="11" font-weight="700" fill="var(--muted)">baterai</text>';
+  }
+  s+=lamps+'</svg>';
+  return s;
+}
+function symbols(){
+  var b='<svg viewBox="0 0 90 60"><line x1="10" y1="30" x2="32" y2="30" stroke="#2b3d57" stroke-width="4"/><line x1="32" y1="12" x2="32" y2="48" stroke="#2b3d57" stroke-width="4"/><line x1="46" y1="20" x2="46" y2="40" stroke="#2b3d57" stroke-width="9"/><line x1="46" y1="30" x2="80" y2="30" stroke="#2b3d57" stroke-width="4"/></svg>';
+  var k='<svg viewBox="0 0 90 60"><path d="M8,40 C25,10 40,52 55,22 S75,34 84,26" fill="none" stroke="#2b3d57" stroke-width="5" stroke-linecap="round"/></svg>';
+  var l='<svg viewBox="0 0 90 60"><line x1="8" y1="30" x2="28" y2="30" stroke="#2b3d57" stroke-width="4"/><circle cx="45" cy="30" r="17" fill="#ffc93c" stroke="#2b3d57" stroke-width="3.5"/><path d="M34,40 L56,20 M34,20 L56,40" stroke="#2b3d57" stroke-width="3"/><line x1="62" y1="30" x2="82" y2="30" stroke="#2b3d57" stroke-width="4"/></svg>';
+  var s='<svg viewBox="0 0 90 60"><line x1="8" y1="40" x2="30" y2="40" stroke="#2b3d57" stroke-width="4"/><circle cx="30" cy="40" r="4" fill="#2b3d57"/><line x1="30" y1="40" x2="56" y2="16" stroke="#2b3d57" stroke-width="4"/><circle cx="62" cy="40" r="4" fill="#2b3d57"/><line x1="62" y1="40" x2="82" y2="40" stroke="#2b3d57" stroke-width="4"/></svg>';
+  return '<div class="sym"><div>'+b+'<b>Baterai</b><small>Sumber listrik. Mendorong arus mengalir.</small></div><div>'+k+'<b>Kabel</b><small>Jalan untuk arus listrik.</small></div><div>'+l+'<b>Lampu</b><small>Menyala saat dialiri arus.</small></div><div>'+s+'<b>Saklar</b><small>Menyambung atau memutus arus.</small></div></div>';
+}
+
+/* ---------- cover ---------- */
+function coverScene(){
+  var stars='';
+  [[30,24],[90,50],[150,18],[220,40],[290,22],[360,56],[430,20],[500,44],[560,16],[610,52],[60,90],[330,86],[470,98],[590,92]].forEach(function(p){stars+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2" fill="#fff8e8" opacity=".8"/>'});
+  function house(x,w,h,lit){
+    var s='<rect x="'+x+'" y="'+(230-h)+'" width="'+w+'" height="'+h+'" fill="#0a1a33"/><path d="M'+(x-6)+','+(230-h)+' L'+(x+w/2)+','+(230-h-26)+' L'+(x+w+6)+','+(230-h)+'Z" fill="#06121f"/>';
+    if(lit)s+='<rect x="'+(x+w/2-9)+'" y="'+(230-h+14)+'" width="18" height="18" fill="#ffc93c" opacity=".35"/>';
+    else s+='<rect x="'+(x+w/2-9)+'" y="'+(230-h+14)+'" width="18" height="18" fill="#122a4d"/>';
+    return s;
+  }
+  function kid(x,col){
+    return '<g><circle cx="'+x+'" cy="176" r="13" fill="#e8b98a"/><path d="M'+(x-14)+',172 q14,-20 28,0z" fill="#2b1d12"/><rect x="'+(x-14)+'" y="190" width="28" height="34" rx="9" fill="'+col+'"/><rect x="'+(x-12)+'" y="222" width="9" height="10" fill="#2b3d57"/><rect x="'+(x+3)+'" y="222" width="9" height="10" fill="#2b3d57"/></g>';
+  }
+  var s='<svg viewBox="0 0 640 250" role="img" aria-label="Kampung malam hari dengan dua anak merangkai lampu seri dan paralel">';
+  s+='<rect width="640" height="250" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#091831"/><stop offset="1" stop-color="#1c4272"/></linearGradient></defs>'+stars;
+  s+='<circle cx="560" cy="60" r="20" fill="#fff3c4"/><circle cx="552" cy="54" r="20" fill="#0f2a4f"/>';
+  s+=house(20,70,70,false)+house(110,60,90,false)+house(470,80,80,false)+house(570,56,64,false);
+  s+='<rect y="230" width="640" height="20" fill="#06121f"/>';
+  /* kiri: rangkaian seri */
+  s+='<g transform="translate(190,84) scale(.78)"><rect x="-6" y="-6" width="322" height="180" rx="14" fill="#fff8e8" opacity=".95"/>'+circuit('seri',[false,false,false],true,false).replace(/<svg[^>]*>/,'').replace('</svg>','')+'</g>';
+  s+='<text x="318" y="78" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="15" fill="#ffc93c">seri</text>';
+  s+=kid(70,'#12a597')+kid(580,'#ff6b5b');
+  s+='</svg>';
+  return s;
+}
+function viewCover(){
+  return '<div class="card cover">'+coverScene()+'<div class="cover-body"><div class="kicker">IPAS · Fase C · Kelas 5 SD</div><h1>Misi Terang</h1><p class="sub">Rangkaian Listrik Seri dan Paralel</p><button class="btn pri start" data-act="start">Mulai</button></div></div>';
+}
+
+/* ---------- menu ---------- */
+function viewMenu(){
+  var d={panduan:'Cara memakai media belajar ini.',cptp:'Apa yang akan kamu capai hari ini.',materi:'7 slide tentang seri dan paralel.',lab:'Rangkai lampu sendiri dan lihat hasilnya.',kuis:'10 soal. Kumpulkan bintang.',referensi:'Sumber belajar tambahan.'};
+  var h='<div class="card"><h2>Pilih bagian belajar</h2><p class="lead">Mulai dari Panduan, lalu ikuti urutannya.</p><div class="grid">';
+  COMPS.forEach(function(c,i){h+='<button class="tile" data-act="go" data-to="'+c[0]+'"><i>'+(i+1)+'</i><b>'+c[1]+'</b><span>'+d[c[0]]+'</span></button>'});
+  return h+'</div></div><div class="nav"><button class="btn ghost" data-act="cover">Kembali ke Cover</button></div>';
+}
+
+/* ---------- panduan, cp/tp, referensi ---------- */
+function viewPanduan(){
+  return '<div class="card"><h2>Panduan</h2><p class="lead">Tiga hal yang perlu kamu tahu sebelum mulai.</p><ol class="steps">'+
+  '<li><span class="n">1</span><div><h3>Pilih bagian lewat Menu</h3><p>Tekan tombol <b>Menu</b> untuk memilih Panduan, CP/TP, Materi, Lab, Kuis, atau Referensi.</p></div></li>'+
+  '<li><span class="n">2</span><div><h3>Pindah halaman dengan panah</h3><p>Tekan <b>Selanjutnya</b> dan <b>Sebelumnya</b> untuk berpindah halaman. Baca setiap slide dengan teliti sebelum lanjut.</p></div></li>'+
+  '<li><span class="n">3</span><div><h3>Kerjakan Kuis dengan jujur</h3><p>Setelah selesai membaca Materi, kerjakan Kuis. Tekan <b>Selesai</b> jika sudah ingin keluar.</p></div></li></ol></div>'+nav();
+}
+function viewCptp(){
+  return '<div class="card"><h2>Capaian dan Tujuan Pembelajaran</h2>'+
+  '<h3 style="margin-top:16px">Capaian Pembelajaran (CP)</h3><p>Peserta didik mengidentifikasi sumber dan bentuk energi, serta menjelaskan bagaimana energi listrik dialirkan dalam rangkaian listrik sederhana.</p>'+
+  '<h3 style="margin-top:16px">Tujuan Pembelajaran (TP)</h3><ol class="steps">'+
+  '<li><span class="n">1</span><div>Menyebutkan bagian rangkaian listrik sederhana (baterai, kabel, lampu, saklar) beserta fungsinya.</div></li>'+
+  '<li><span class="n">2</span><div>Membedakan rangkaian seri dan paralel dari jalur arus listrik dan nyala lampu.</div></li>'+
+  '<li><span class="n">3</span><div>Menjelaskan kelebihan dan kekurangan rangkaian seri dan paralel, serta contohnya dalam kehidupan sehari-hari.</div></li></ol></div>'+nav();
+}
+function viewRef(){
+  return '<div class="card"><h2>Referensi</h2><p class="lead">Sumber belajar untuk dibuka bersama guru atau orang tua.</p><ol class="refs">'+
+  '<li>Kemendikbudristek. <i>Buku Siswa IPAS untuk SD/MI Kelas V, Kurikulum Merdeka.</i> <a href="https://buku.kemdikbud.go.id" target="_blank" rel="noopener">buku.kemdikbud.go.id</a></li>'+
+  '<li>PhET Interactive Simulations, Universitas Colorado Boulder. <i>Circuit Construction Kit: DC.</i> <a href="https://phet.colorado.edu" target="_blank" rel="noopener">phet.colorado.edu</a></li>'+
+  '<li>Rumah Belajar Kemendikbud. Materi IPAS SD. <a href="https://belajar.kemendikbud.go.id" target="_blank" rel="noopener">belajar.kemendikbud.go.id</a></li></ol></div>'+nav();
+}
+
+/* ---------- materi ---------- */
+var SL=[
+ {t:'Apa Itu Rangkaian Listrik?',h:function(){
+   return '<div class="two"><div><p class="lead">Listrik mengalir lewat jalur yang <b>tertutup</b>, dari baterai, ke lampu, lalu kembali ke baterai.</p><ul class="k"><li>Jalur tertutup: lampu <span class="chip">menyala</span></li><li>Jalur terputus: lampu <span class="chip t">padam</span></li><li>Contoh: senter dan lampu belajar</li></ul></div><div><div class="fig">'+circuit('seri',[false,false,false],true,true).replace('"0 0 320 180"','"0 0 320 180"')+'</div><p class="cap">Arus (titik kuning) mengalir di jalur tertutup.</p></div></div>';}},
+ {t:'Bagian-Bagian Rangkaian Listrik',h:function(){return '<p class="lead">Rangkaian listrik sederhana punya empat bagian utama beserta simbolnya.</p>'+symbols();}},
+ {t:'Rangkaian Seri',h:function(){
+   return '<div class="two"><div><p class="lead">Lampu disusun <b>berderet</b> pada satu jalur.</p><ul class="k"><li>Arus hanya punya <b>satu jalan</b>.</li><li>Satu lampu dilepas, <b>semua padam</b>.</li><li>Makin banyak lampu, nyalanya <b>makin redup</b>.</li></ul></div><div><div class="fig">'+circuit('seri',[false,false,false],true,false)+'</div><p class="cap">Tiga lampu seri. Nyalanya redup.</p></div></div>';}},
+ {t:'Rangkaian Paralel',h:function(){
+   return '<div class="two"><div><p class="lead">Lampu disusun <b>bercabang</b>.</p><ul class="k"><li>Arus punya <b>lebih dari satu jalan</b>.</li><li>Satu lampu dilepas, lampu lain <b>tetap menyala</b>.</li><li>Semua lampu menyala <b>sama terang</b>.</li></ul></div><div><div class="fig">'+circuit('par',[false,false,false],true,false)+'</div><p class="cap">Tiga lampu paralel. Nyalanya terang.</p></div></div>';}},
+ {t:'Perbandingan Seri dan Paralel',h:function(){
+   return '<div class="tbl"><table><thead><tr><th></th><th>Seri</th><th>Paralel</th></tr></thead><tbody><tr><td><b>Bentuk jalur</b></td><td>Satu jalur berderet</td><td>Bercabang</td></tr><tr><td><b>Nyala lampu</b></td><td>Redup jika lampu banyak</td><td>Terang, sama untuk semua</td></tr><tr><td><b>Satu lampu putus</b></td><td>Semua lampu padam</td><td>Lampu lain tetap menyala</td></tr><tr><td><b>Kebutuhan kabel</b></td><td>Lebih sedikit</td><td>Lebih banyak</td></tr></tbody></table></div><p class="cap" style="margin-top:12px">Coba buktikan sendiri di Lab Rangkaian.</p>';}},
+ {t:'Rangkaian Listrik di Sekitar Kita',h:function(){
+   return '<div class="two"><div><h3>Di rumah</h3><p>Lampu-lampu di rumah dipasang <b>paralel</b>. Jadi setiap lampu bisa dinyalakan sendiri, dan lampu kamar tetap menyala saat lampu dapur putus.</p></div><div><h3>Lampu hias berderet</h3><p>Lampu hias model lama sering dipasang <b>seri</b>. Saat satu bohlam putus, seluruh untaian ikut padam.</p></div></div><p class="lead" style="margin-top:14px">Coba sebutkan satu contoh lain di rumahmu. Seri atau paralel?</p>';}},
+ {t:'Rangkuman',h:function(){
+   return '<div class="two"><div><div class="fig">'+circuit('seri',[false,false,false],true,false)+'</div><h3 style="margin-top:10px">Seri</h3><p>Satu jalur. Satu putus, semua padam.</p></div><div><div class="fig">'+circuit('par',[false,false,false],true,false)+'</div><h3 style="margin-top:10px">Paralel</h3><p>Bercabang. Satu putus, yang lain tetap menyala.</p></div></div>';}}
+];
+function viewMateri(){
+  var s=SL[S.slide],p='';
+  for(var i=0;i<SL.length;i++)p+='<b class="'+(i<=S.slide?'on':'')+'"></b>';
+  return '<div class="card"><span class="chip">Slide '+(S.slide+1)+' dari '+SL.length+'</span><h2 style="margin-top:8px">'+s.t+'</h2>'+s.h()+'<div class="pager">'+p+'</div></div>'+nav();
+}
+
+/* ---------- lab ---------- */
+function viewLab(){
+  var L=S.lab,any=L.gone.some(Boolean);
+  var ok=L.sw&&(L.mode==='par'?L.gone.some(function(g){return !g}):!any);
+  var msg;
+  if(!L.sw)msg='Saklar mati, jadi jalurnya terputus. Semua lampu padam.';
+  else if(L.mode==='seri'){
+    msg=any?'Satu lampu dilepas, jalur seri terputus. Semua lampu padam.':'Semua lampu terpasang. Jalur tertutup, lampu menyala redup.';
+  }else{
+    var n=L.gone.filter(function(g){return !g}).length;
+    msg=n===3?'Semua lampu terpasang. Jalur bercabang, semua lampu menyala terang.':(n>0?'Lampu yang dilepas padam, tetapi '+n+' lampu lain tetap menyala terang.':'Semua lampu dilepas. Tidak ada yang menyala.');
+  }
+  var b='';
+  [0,1,2].forEach(function(i){b+='<button class="btn" data-act="lamp" data-i="'+i+'" aria-pressed="'+L.gone[i]+'">'+(L.gone[i]?'Pasang':'Lepas')+' lampu '+(i+1)+'</button>'});
+  return '<div class="card"><h2>Lab Rangkaian</h2><p class="lead">Pilih jenis rangkaian, lalu lepas lampu satu per satu. Lihat apa yang terjadi.</p>'+
+  '<div class="ctl"><div class="seg" role="group" aria-label="Jenis rangkaian"><button data-act="mode" data-m="seri" class="'+(L.mode==='seri'?'on':'')+'">Seri</button><button data-act="mode" data-m="par" class="'+(L.mode==='par'?'on':'')+'">Paralel</button></div><button class="btn" data-act="sw">Saklar: '+(L.sw?'Hidup':'Mati')+'</button></div>'+
+  '<div class="fig">'+circuit(L.mode,L.gone,L.sw,true)+'</div>'+
+  '<div class="ctl">'+b+'<button class="btn ghost" data-act="labreset">Ulangi</button></div>'+
+  '<div class="status '+(ok?'ok':'no')+'" role="status">'+msg+'</div></div>'+nav();
+}
+
+/* ---------- kuis ---------- */
+var QS=[
+ {k:'mc',q:'Tiga lampu disusun secara seri. Apa yang terjadi jika salah satu lampu dilepas?',o:['Dua lampu lainnya tetap menyala','Semua lampu padam','Lampu lainnya menjadi lebih terang','Baterai langsung habis'],a:1,e:'Rangkaian seri hanya punya satu jalur. Jika jalur terputus, semua lampu padam.'},
+ {k:'mc',q:'Lampu-lampu di rumah bisa dinyalakan sendiri-sendiri. Lampu itu dipasang secara ...',o:['paralel','seri','tanpa kabel','tanpa baterai'],a:0,e:'Rangkaian paralel bercabang, jadi setiap lampu punya jalurnya sendiri.'},
+ {k:'mc',q:'Apa fungsi saklar dalam rangkaian listrik?',o:['Menghasilkan listrik','Mengubah listrik menjadi cahaya','Menyambung dan memutus arus listrik','Menyimpan listrik'],a:2,e:'Saklar menyambung atau memutus jalur sehingga lampu bisa dinyalakan atau dimatikan.'},
+ {k:'mc',q:'Makin banyak lampu dipasang secara seri, nyala lampunya akan ...',o:['makin terang','tetap sama','makin redup','padam seketika'],a:2,e:'Pada rangkaian seri, arus dibagi untuk semua lampu sehingga nyalanya makin redup.'},
+ {k:'tf',q:'Lampu di rumah dipasang paralel agar setiap lampu bisa dinyalakan sendiri.',a:true,e:'Benar. Setiap lampu punya jalur sendiri.'},
+ {k:'tf',q:'Pada rangkaian paralel, jika satu lampu putus maka semua lampu ikut padam.',a:false,e:'Salah. Pada rangkaian paralel, lampu lain tetap menyala. Yang padam semua jika satu putus adalah rangkaian seri.'},
+ {k:'tf',q:'Rangkaian seri hanya memiliki satu jalur arus listrik.',a:true,e:'Benar. Lampu berderet pada satu jalur saja.'},
+ {k:'fill',q:'Pada rangkaian ........., arus listrik mengalir melalui lebih dari satu jalur.',a:['paralel'],e:'Jawabannya paralel. Jalurnya bercabang.'},
+ {k:'fill',q:'Bagian rangkaian yang menjadi sumber listrik disebut .........',a:['baterai','batere','batu baterai','baterei'],e:'Jawabannya baterai.'},
+ {k:'dnd',q:'Kelompokkan ciri-ciri berikut. Ketuk kartu, lalu ketuk kolom tujuannya.',cards:[['satu jalur','seri'],['bercabang','par'],['lampu makin redup','seri'],['lampu tetap terang','par'],['satu putus, semua padam','seri'],['satu putus, lainnya menyala','par']],e:'Seri: satu jalur, makin redup, satu putus semua padam. Paralel: bercabang, tetap terang, lainnya tetap menyala.'}
+];
+function newQuiz(){return {i:0,score:0,answered:false,ok:false,sel:null,text:'',place:{},pick:null,done:false}}
+function viewQuiz(){
+  var Q=S.q||(S.q=newQuiz());
+  if(Q.done)return viewScore(Q);
+  var q=QS[Q.i],h='<div class="card"><div class="qhead"><span>Soal '+(Q.i+1)+' dari '+QS.length+'</span><span>Skor: '+Q.score*10+'</span></div><div class="qtext">'+q.q+'</div>';
+  if(q.k==='mc'){
+    h+='<div class="opts">';
+    q.o.forEach(function(t,i){
+      var c='opt';if(Q.answered){if(i===q.a)c+=' right';else if(i===Q.sel)c+=' wrong'}
+      h+='<button class="'+c+'" data-act="mc" data-i="'+i+'"'+(Q.answered?' disabled':'')+'><span class="l">'+'ABCD'[i]+'</span><span>'+t+'</span></button>';
+    });
+    h+='</div>';
+  }else if(q.k==='tf'){
+    h+='<div class="opts">';
+    [[true,'Benar'],[false,'Salah']].forEach(function(p){
+      var c='opt';if(Q.answered){if(p[0]===q.a)c+=' right';else if(p[0]===Q.sel)c+=' wrong'}
+      h+='<button class="'+c+'" data-act="tf" data-v="'+p[0]+'"'+(Q.answered?' disabled':'')+'><span class="l">'+(p[0]?'B':'S')+'</span><span>'+p[1]+'</span></button>';
+    });
+    h+='</div>';
+  }else if(q.k==='fill'){
+    h+='<div class="fill"><input id="fillin" type="text" autocomplete="off" autocapitalize="none" placeholder="Ketik jawabanmu" value="'+Q.text.replace(/"/g,'&quot;')+'"'+(Q.answered?' disabled':'')+' aria-label="Jawaban isian"><button class="btn pri" data-act="fillchk"'+(Q.answered?' disabled':'')+'>Periksa</button></div>';
+  }else{
+    var pool='',cols={seri:'',par:''};
+    q.cards.forEach(function(c,i){
+      var pl=Q.place[i],cls='card2'+(Q.pick===i?' sel':'');
+      if(Q.answered)cls+=(pl===c[1]?' right':' wrong');
+      var el='<button class="'+cls+'" data-act="card" data-i="'+i+'"'+(Q.answered?' disabled':'')+' draggable="'+(!Q.answered)+'" data-drag="'+i+'">'+c[0]+'</button>';
+      if(pl)cols[pl]+=el;else pool+=el;
+    });
+    h+='<div class="pool" id="pool">'+(pool||'<span class="cap">Semua kartu sudah ditempatkan.</span>')+'</div><div class="dnd"><div class="col" data-act="col" data-c="seri" data-drop="seri"><h4>Rangkaian Seri</h4>'+cols.seri+'</div><div class="col" data-act="col" data-c="par" data-drop="par"><h4>Rangkaian Paralel</h4>'+cols.par+'</div></div>';
+    if(!Q.answered)h+='<div class="ctl"><button class="btn pri" data-act="dndchk"'+(Object.keys(Q.place).length<q.cards.length?' disabled':'')+'>Periksa</button></div>';
+  }
+  if(Q.answered)h+='<div class="fb '+(Q.ok?'ok':'no')+'" role="status"><strong>'+(Q.ok?'Benar! Hebat.':'Belum tepat.')+'</strong>'+q.e+'</div><div class="ctl"><button class="btn pri" data-act="qnext">'+(Q.i===QS.length-1?'Lihat Hasil':'Soal Berikutnya')+'</button></div>';
+  return h+'</div>'+nav();
+}
+function viewScore(Q){
+  var pts=Q.score*10,n=pts>=90?3:pts>=70?2:pts>=40?1:0,st='';
+  for(var i=0;i<3;i++)st+=i<n?'★':'☆';
+  var m=pts>=90?'Luar biasa! Kamu paham seri dan paralel.':pts>=70?'Bagus! Sedikit lagi sempurna.':'Ayo baca Materi dan coba Lab Rangkaian, lalu ulangi kuisnya.';
+  return '<div class="card score"><h2>Hasil Kuis</h2><div class="big">'+pts+'</div><div class="stars" aria-label="'+n+' dari 3 bintang">'+st+'</div><p class="lead">Benar '+Q.score+' dari '+QS.length+' soal. '+m+'</p><div class="ctl" style="justify-content:center"><button class="btn pri" data-act="qretry">Ulangi Kuis</button><button class="btn" data-act="go" data-to="materi">Baca Materi</button></div></div>'+nav();
+}
+function answer(ok,sel){var Q=S.q;Q.answered=true;Q.ok=ok;if(sel!==undefined)Q.sel=sel;if(ok){Q.score++;ting()}else buzz();render()}
+
+/* ---------- selesai ---------- */
+function viewEnd(){
+  return '<div class="card score"><h2>Terima kasih sudah belajar!</h2><p class="lead">Kamu sudah mengenal rangkaian seri dan paralel. Satu jalur untuk seri, bercabang untuk paralel.</p><div class="ctl" style="justify-content:center"><button class="btn pri" data-act="menu">Belajar Lagi</button><button class="btn" data-act="cover">Kembali ke Cover</button></div></div>';
+}
+
+/* ---------- navigasi ---------- */
+function nav(){
+  return '<div class="nav"><button class="btn ghost" data-act="menu">Menu</button><div class="grow"></div><button class="btn" data-act="prev">← Sebelumnya</button><button class="btn pri" data-act="next">Selanjutnya →</button><button class="btn ghost" data-act="done">Selesai</button></div>';
+}
+function idx(){for(var i=0;i<COMPS.length;i++)if(COMPS[i][0]===S.screen)return i;return -1}
+function go(to){S.screen=to;if(to==='materi')S.slide=0;window.scrollTo(0,0);render()}
+function crumb(){
+  if(S.screen==='cover')return '';
+  if(S.screen==='menu')return 'Menu';
+  if(S.screen==='end')return 'Selesai';
+  var i=idx();return i>=0?COMPS[i][1]:'';
+}
+function render(){
+  var v={cover:viewCover,menu:viewMenu,panduan:viewPanduan,cptp:viewCptp,materi:viewMateri,lab:viewLab,kuis:viewQuiz,referensi:viewRef,end:viewEnd}[S.screen]();
+  var top='<div class="top"><span class="brand">Misi Terang</span><span class="crumb">'+(crumb()?'· '+crumb():'')+'</span><span class="grow"></span><button class="snd" data-act="snd" aria-pressed="'+S.sound+'">Suara: '+(S.sound?'Hidup':'Mati')+'</button></div>';
+  $app.innerHTML=top+v;
+  var f=document.getElementById('fillin');if(f&&!S.q.answered)f.focus({preventScroll:true});
+}
+
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act'),Q=S.q;
+  if(a!=='mc'&&a!=='tf'&&a!=='fillchk')click();
+  if(a==='start'||a==='menu'){S.screen='menu';window.scrollTo(0,0);return render()}
+  if(a==='cover')return go('cover');
+  if(a==='go')return go(t.getAttribute('data-to'));
+  if(a==='snd'){S.sound=!S.sound;return render()}
+  if(a==='done')return go('end');
+  if(a==='prev'){
+    if(S.screen==='materi'&&S.slide>0){S.slide--;window.scrollTo(0,0);return render()}
+    var i=idx();if(i<=0)return go('menu');return go(COMPS[i-1][0]);
+  }
+  if(a==='next'){
+    if(S.screen==='materi'&&S.slide<SL.length-1){S.slide++;window.scrollTo(0,0);return render()}
+    var j=idx();if(j>=COMPS.length-1)return go('end');return go(COMPS[j+1][0]);
+  }
+  if(a==='mode'){S.lab.mode=t.getAttribute('data-m');S.lab.gone=[false,false,false];return render()}
+  if(a==='sw'){S.lab.sw=!S.lab.sw;return render()}
+  if(a==='lamp'){var k=+t.getAttribute('data-i');S.lab.gone[k]=!S.lab.gone[k];return render()}
+  if(a==='labreset'){S.lab.gone=[false,false,false];S.lab.sw=true;return render()}
+  if(a==='mc'){var qi=+t.getAttribute('data-i');return answer(qi===QS[Q.i].a,qi)}
+  if(a==='tf'){var v=t.getAttribute('data-v')==='true';return answer(v===QS[Q.i].a,v)}
+  if(a==='fillchk'){var inp=document.getElementById('fillin');var val=(inp.value||'').trim().toLowerCase();if(!val){inp.focus();return}Q.text=inp.value;return answer(QS[Q.i].a.indexOf(val)>-1)}
+  if(a==='card'){var ci=+t.getAttribute('data-i');Q.pick=(Q.pick===ci)?null:ci;if(Q.place[ci]!==undefined&&Q.pick===ci){delete Q.place[ci];Q.pick=null}return render()}
+  if(a==='col'){if(Q.pick!==null){Q.place[Q.pick]=t.getAttribute('data-c');Q.pick=null;return render()}return}
+  if(a==='dndchk'){var q=QS[Q.i],ok=q.cards.every(function(c,i){return Q.place[i]===c[1]});return answer(ok)}
+  if(a==='qnext'){if(Q.i===QS.length-1){Q.done=true}else{var sc=Q.score;S.q=newQuiz();S.q.i=Q.i+1;S.q.score=sc}window.scrollTo(0,0);return render()}
+  if(a==='qretry'){S.q=newQuiz();return render()}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='fillin'){var b=document.querySelector('[data-act="fillchk"]');if(b)b.click()}});
+/* seret dan lepas (opsional; ketuk juga bisa) */
+document.addEventListener('dragstart',function(e){var c=e.target.closest&&e.target.closest('[data-drag]');if(c){e.dataTransfer.setData('text/plain',c.getAttribute('data-drag'));e.dataTransfer.effectAllowed='move'}});
+document.addEventListener('dragover',function(e){var c=e.target.closest&&e.target.closest('[data-drop]');if(c){e.preventDefault();c.classList.add('hot')}});
+document.addEventListener('dragleave',function(e){var c=e.target.closest&&e.target.closest('[data-drop]');if(c)c.classList.remove('hot')});
+document.addEventListener('drop',function(e){var c=e.target.closest&&e.target.closest('[data-drop]');if(!c)return;e.preventDefault();var i=e.dataTransfer.getData('text/plain');if(i===''||!S.q)return;S.q.place[+i]=c.getAttribute('data-drop');S.q.pick=null;render()});
+render();
+})();
+</script>
+</body>
+</html>
