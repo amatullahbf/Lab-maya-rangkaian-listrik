@@ -1,0 +1,26 @@
+cd /tmp/claude-0/-home-claude/098971df-32df-5811-a540-fab111f1ea58/scratchpad && cat > chk.js <<'EOF'
+const {chromium}=require('playwright');
+(async()=>{
+ const b=await chromium.launch();const p=await b.newPage({viewport:{width:400,height:800}});
+ const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
+ await p.goto('file:///home/claude/misi-terang.html');
+ await p.screenshot({path:'cover.png'});
+ await p.click('[data-act=start]');await p.click('[data-to=materi]');
+ for(let i=0;i<3;i++)await p.click('[data-act=next]');
+ await p.screenshot({path:'slide4.png'});
+ await p.click('[data-act=menu]');await p.click('[data-to=lab]');await p.click('[data-act=lamp][data-i="1"]');
+ await p.screenshot({path:'lab.png'});
+ await p.click('[data-act=mode][data-m=par]');await p.click('[data-act=lamp][data-i="1"]');
+ await p.click('[data-act=menu]');await p.click('[data-to=kuis]');
+ for(let i=0;i<4;i++){await p.click('[data-act=mc][data-i="1"]');await p.click('[data-act=qnext]');}
+ for(let i=0;i<3;i++){await p.click('[data-act=tf][data-v=true]');await p.click('[data-act=qnext]');}
+ await p.fill('#fillin','paralel');await p.click('[data-act=fillchk]');await p.click('[data-act=qnext]');
+ await p.fill('#fillin','baterai');await p.click('[data-act=fillchk]');await p.click('[data-act=qnext]');
+ const order=[['seri'],['par'],['seri'],['par'],['seri'],['par']];
+ for(let i=0;i<6;i++){await p.click('#pool [data-act=card]');await p.click('[data-c='+order[i][0]+']');}
+ await p.screenshot({path:'dnd.png'});
+ console.log('overflowX',await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
+ console.log('errs',JSON.stringify(errs));await b.close();
+})();
+EOF
+node chk.js
